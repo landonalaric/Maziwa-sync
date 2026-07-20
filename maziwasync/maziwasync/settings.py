@@ -89,10 +89,10 @@ WSGI_APPLICATION = 'maziwasync.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'maziwasyncdb',
-        'USER': 'root',
+        'NAME': 'klaus_maziwasyncdb',
+        'USER': 'klaus',
         'PASSWORD': '',
-        'HOST': 'localhost',
+        'HOST': 'mysql-klaus.alwaysdata.net',
         
     }
 }
