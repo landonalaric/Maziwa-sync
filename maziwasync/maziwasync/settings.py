@@ -91,7 +91,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'klaus_maziwasyncdb',
         'USER': 'klaus',
-        'PASSWORD': '',
+        'PASSWORD': 'Trinity_198507',
         'HOST': 'mysql-klaus.alwaysdata.net',
         
     }
