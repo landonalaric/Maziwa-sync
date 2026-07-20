@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["passcode-comply-other.ngrok-free.dev",
                  "127.0.0.1",
-                 "localhost"
+                 "klaus.alwaysdata.net"
                  ]
 AUTH_USER_MODEL = 'core.User'
 
