@@ -97,7 +97,7 @@ class FeedbackViewset(viewsets.ModelViewSet):
         return feedback
     
     # post by yhe farmer token
-    def perform_created(self, serializer):
+    def perform_create(self, serializer):
         try:
             farmer= self.request.user.farmer_profile
         except:
