@@ -28,7 +28,13 @@ DEBUG = True
 ALLOWED_HOSTS = ["passcode-comply-other.ngrok-free.dev",
                  "127.0.0.1",
                  "klaus.alwaysdata.net"
+
                  ]
+
+CORS_ALLOWED_ORIGINS=[
+    " http://localhost:5173/",
+    "http://127.0.0.1:5173/",
+]
 AUTH_USER_MODEL = 'core.User'
 
 # Application definition
