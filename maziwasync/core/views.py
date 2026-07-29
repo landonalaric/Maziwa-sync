@@ -127,6 +127,8 @@ def Myprofile(request):
             "id": user.id,
             "username": user.username, 
             "role": user.role,
+            "email":user.email,
+            "phone_number":user.phone_number,
             "profile": profile_data
         })
 
