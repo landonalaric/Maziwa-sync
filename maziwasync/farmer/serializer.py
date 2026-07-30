@@ -7,7 +7,7 @@ class MilkCollectionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MilkCollection
-        fields = ['id', 'litres', 'sessions', 'price_per_litre', 'total_amount', 'collection_date', 'porter_name']
+        fields = ['id', 'litres', 'session', 'price_per_litre', 'total_amount', 'collection_date', 'porter_name']
 
 # use it when you want to alter the field on how it looks like in a model
 
