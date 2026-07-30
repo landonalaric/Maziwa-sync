@@ -12,8 +12,11 @@ class MilkCollectionSerializer(serializers.ModelSerializer):
 # use it when you want to alter the field on how it looks like in a model
 
 
-        def get_porter_name(self,obj):
-            return f"{obj.porter.first_name} {obj.porter.last_name}"
+        
+
+    def get_porter_name(self, obj):
+        return f"{obj.porter.first_name} {obj.porter.last_name}"
+        
         
 
         # Feedback serializer
