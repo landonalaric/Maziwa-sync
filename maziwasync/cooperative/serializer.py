@@ -5,6 +5,14 @@ from core.models import FarmerProfile, PorterProfile, Notice
 
 User = get_user_model()
 
+
+# admin/cooperative farmer account
+class FarmerSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = FarmerProfile
+		fields = '__all__'
+
+
 class PorterSerializer(serializers.ModelSerializer):
 	# these belong to the User model, not PorterProfile — accept them here,
 	# then use them in create() to build the linked User account
@@ -41,3 +49,11 @@ class PorterSerializer(serializers.ModelSerializer):
 
 		porter = PorterProfile.objects.create(user=user, **validated_data)
 		return porter
+
+
+# Notice
+class NoticeSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Notice
+		fields = '__all__'
+		read_only_fields = ['created_by']
