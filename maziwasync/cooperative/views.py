@@ -160,13 +160,11 @@ class FarmerViewset(viewsets.ModelViewSet):
     permission_classes = [IsAdminUser]
     http_method_names = ['get', 'put', 'patch', 'delete']
 
-
 class PorterViewset(viewsets.ModelViewSet):
     queryset = PorterProfile.objects.all()
     serializer_class = PorterSerializer
     permission_classes = [IsAdminUser]
-    http_method_names = ['get', 'put', 'patch', 'delete']
-
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
 
 class MilkCollectionViewset(viewsets.ModelViewSet):
     queryset = MilkCollection.objects.select_related(
