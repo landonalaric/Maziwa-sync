@@ -20,20 +20,20 @@ class PorterSerializer(serializers.ModelSerializer):
 	password = serializers.CharField(write_only=True, min_length=8)
 	phone_number = serializers.CharField(write_only=True, required=False, allow_blank=True)
 
-	class Meta:
-		model = PorterProfile
-		fields = [
-			'id', 'username', 'password', 'phone_number',
-			'first_name', 'last_name', 'national_id_number',
-			'employee_id', 'route_name', 'profile_image',
-			'hire_date', 'is_active', 'total_collections',
-			'total_litres_collected',
-		]
-		read_only_fields = [
-			'hire_date', 'is_active', 'total_collections', 'total_litres_collected'
-		]
+class Meta:
+    model = PorterProfile
+    fields = [
+        'id', 'username', 'password', 'phone_number',
+        'first_name', 'last_name', 'national_id_number',
+        'employee_id', 'route_name', 'profile_image',
+        'hire_date', 'is_active', 'total_collections',
+        'total_litres_collected',
+    ]
+    read_only_fields = [
+        'hire_date', 'total_collections', 'total_litres_collected'
+    ]
 
-	def create(self, validated_data):
+def create(self, validated_data):
 		username = validated_data.pop('username')
 		password = validated_data.pop('password')
 		phone_number = validated_data.pop('phone_number', None)
