@@ -13,6 +13,7 @@ class CattleAIService:
         self.model = joblib.load(os.path.join(base_dir, 'cattle_disease_model.pkl'))  
         # loading the features/x/inputs
         self.model_features = joblib.load(os.path.join(base_dir, 'model_features.pkl'))
+        # 
 
         # extract the symptoms from the model_features
         self.valid_symptoms = [
