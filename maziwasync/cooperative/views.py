@@ -1,7 +1,8 @@
 from django.shortcuts import render
+from django.contrib.auth import update_session_auth_hash
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import viewsets
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.views import APIView, Response
 
 from core.models import FarmerProfile, Feedback, Payment, PorterProfile, MilkCollection, Notice
@@ -13,6 +14,7 @@ from django.db.models import Sum
 
 from collector.seriliazer import MilkCollectionSerializer
 from cooperative.services import MpesaPayment
+from rest_framework import status
 
 # Create your views here.
 class AdminDashboardView(APIView):
@@ -98,6 +100,55 @@ class AdminDashboardView(APIView):
         }
 
         return Response(data)
+
+
+class AdminProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            "name": user.get_full_name() or user.username,
+            "email": user.email,
+            "phone": getattr(user, "phone", ""),
+            "role": "admin",
+        })
+
+    def patch(self, request):
+        user = request.user
+        data = request.data
+
+        if "name" in data:
+            # adjust to however you store name (first_name/last_name, or a profile model)
+            user.first_name = data["name"]
+        if "email" in data:
+            user.email = data["email"]
+        if "phone" in data and hasattr(user, "phone"):
+            user.phone = data["phone"]
+
+        user.save()
+        return Response({"message": "Profile updated successfully"})
+
+
+class AdminChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        current_password = request.data.get("current_password")
+        new_password = request.data.get("new_password")
+
+        if not user.check_password(current_password):
+            return Response(
+                {"message": "Current password is incorrect"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        user.set_password(new_password)
+        user.save()
+        update_session_auth_hash(request, user)  # keeps user logged in after password change
+
+        return Response({"message": "Password changed successfully"})
 
           
 

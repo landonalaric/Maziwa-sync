@@ -12,6 +12,8 @@ urlpatterns = [
    path('dashboard/', views.AdminDashboardView.as_view()),
    path('farmer/balance/', views.FarmerWithBal),
    path('payFarmer/',views.payFarmer),
-   path('Callback/',views.MpesaCallback)
-   
+   path('Callback/',views.MpesaCallback),
+   path('admin/profile/', views.AdminProfileView.as_view()),
+   path('admin/change-password/', views.AdminChangePasswordView.as_view()),
 ]
+   
