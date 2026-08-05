@@ -158,7 +158,7 @@ class FarmerViewset(viewsets.ModelViewSet):
     queryset = FarmerProfile.objects.all()
     serializer_class = FarmerSerializer
     permission_classes = [IsAdminUser]
-    http_method_names = ['get', 'put', 'patch', 'delete']
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
 
 class PorterViewset(viewsets.ModelViewSet):
     queryset = PorterProfile.objects.all()
@@ -173,7 +173,7 @@ class MilkCollectionViewset(viewsets.ModelViewSet):
     )
     serializer_class = MilkCollectionSerializer
     permission_classes = [IsAdminUser]
-    http_method_names = ['get', 'put', 'patch', 'delete']
+    http_method_names = ['get','post' 'put', 'patch', 'delete']
 
 
 # Notices board by the cooperative

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import MilkCollection, Feedback
+from core.models import FarmerProfile, MilkCollection, Feedback
 
 class MilkCollectionSerializer(serializers.ModelSerializer):
     porter_name = serializers.SerializerMethodField()
@@ -25,3 +25,16 @@ class FeedbackSerializer(serializers.ModelSerializer):
                 model= Feedback
                 fields=['id','title','description', 'status', 'created_at', 'updated_at']
                 read_only_fields=['status','created_at','updated_at']
+
+class FarmerSerializer(serializers.ModelSerializer):
+	email = serializers.EmailField(source='user.email', read_only=True)
+
+	class Meta:
+		model = FarmerProfile
+		fields = [
+			'id', 'user', 'email', 'first_name', 'last_name',
+			'national_id_number', 'phone_number', 'farm_name',
+			'farm_size_acres', 'number_of_cows', 'membership_number',
+			'join_date', 'mpesa_number', 'total_milk_delivered',
+			'total_earnings',
+		]                
