@@ -10,7 +10,7 @@ from cooperative.serializer import FarmerSerializer, PorterSerializer, NoticeSer
 
 from django.utils import timezone
 from datetime import timedelta
-from django.db.models import Sum
+from django.db.models import Sum, Q
 
 from collector.seriliazer import MilkCollectionSerializer
 from cooperative.services import MpesaPayment
@@ -188,36 +188,30 @@ class NoticeViewset(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
 
+
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def FarmerWithBal(request):
-    print("hey")
-    farmers=FarmerProfile.objects.all()
-    print(farmers)
-    data=[] 
+    farmers = FarmerProfile.objects.annotate(
+        earned=Sum('milkcollection__total_amount'),
+        paid=Sum('payment__amount', filter=Q(payment__status='COMPLETED')),
+    )
+
+    data = []
     for farmer in farmers:
-        earned=MilkCollection.objects.filter(farmer=farmer).aggregate(
-            total=Sum('total_amount')
-        )['total'] or 0
-
-            #  amount paid to   
-        paid=Payment.objects.filter(farmer=farmer, status='COMPLETED').aggregate(
-            total=Sum('amount')
-        )['total'] or 0
-
-        balance= earned-paid
-        if balance>0:
+        earned = farmer.earned or 0
+        paid = farmer.paid or 0
+        balance = earned - paid
+        if balance > 0:
             data.append({
-                "farmer_id":farmer.id,
-                "farmer":f"{farmer.first_name} {farmer.last_name}",
-                "phone":farmer .phone_number,
+                "farmer_id": farmer.id,
+                "farmer": f"{farmer.first_name} {farmer.last_name}",
+                "phone": farmer.phone_number,
                 "earned": earned,
-                "paid":paid,
-                "Balance":balance
+                "paid": paid,
+                "balance": balance,
+            })
 
-            })  
-
-        print("data",data)
     return Response(data)
 
 
