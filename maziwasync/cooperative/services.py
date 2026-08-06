@@ -13,7 +13,7 @@ class MpesaPayment:
 
         # Daraja B2C credentials
         self.initiator = "testapi"
-        self.security_credential = "PPMASUVMORtu7gUEIBKFL+UPQDIKW/yEJnZ0F6rsocxI2rOIj5QJOM3u5kukzdwBy9kJtrcghpa8qPT4rDI5sobdhNstp1EVabfVql5BKsp25hUACi8bSBofWjx1M3YuWRQcjjFJvRJY+a0fsWAzlSuYVCxLj3Dgy8L+xKQ9S8teuvWNz6wazrON7T/bg4oQQJFoP0R0XxeNHgiKG+qdjJTecOfBAsk/FBZnIw+HaLBE3LvrGkbjZKIs2BS2SGME1iBplFjBVR1TMtDibuc04cUCD5PkRaqkyiSIAP6R+XCej+TMedCgb7InOlsxYdaJnFjThIw0zUaQC3jiivSA5A=="
+        self.security_credential = "oQZ1PBWzZOhfHAxDsWS5ezea4pD2ENa2tGuSNz8UZxZuFF1LBBDhqChGwkBTa1kUYArw0y5t/r532kVPTbocNp9LLTyW5dQsP/2EM4nBUzmnZaJxOPtjzMZ/oWLuo1dRBOLgIuNZ/hiGNGAFHzLCl2g3Ya/5S0bcgjPT4rcTyltdWAsXV+IRVVlRbiHJBmi0u8p0crtcoY1bWAvcLIWkp0FcVY2DXcLqDQTksuSZ2APBy8a+7s32shQbooR9xCIqqko51Ng80fFCcyjXfzggX/nz1SDJwe1PFANo+33eFG+SAyaE409P31pw2Q1LKRUyF9hseGTcauGTWHZTFR8UBQ=="
         # Daraja endpoints
         self.token_url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
         self.payment_url = "https://sandbox.safaricom.co.ke/mpesa/b2b/v1/paymentrequest"
@@ -39,7 +39,7 @@ class MpesaPayment:
             "SecurityCredential": self.security_credential,
             "CommandID": "BusinessPayToBulk",
             "Amount": amount,
-            "PartyA": "600989",  # Cooperative Shortcode
+            "PartyA": "600977",  # Cooperative Shortcode
             "PartyB": "600000",
             "SenderIdentifierType": "4",
             "RecieverIdentifierType": "4",
