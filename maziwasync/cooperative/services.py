@@ -19,7 +19,7 @@ class MpesaPayment:
         self.payment_url = "https://sandbox.safaricom.co.ke/mpesa/b2b/v1/paymentrequest"
 
         # Public HTTPS endpoint where Safaricom sends transaction results (Generated via ngrok)
-        self.callback_url = "https://klaus.alwaysdata.net/api/cooperative/callback"
+        self.callback_url = "https://klaus.alwaysdata.net.dev/api/cooperative/callback"
 
     def get_token(self):
         # Requests an OAuth2 temporary access token from Safaricom
