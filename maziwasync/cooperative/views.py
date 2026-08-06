@@ -191,7 +191,9 @@ class NoticeViewset(viewsets.ModelViewSet):
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def FarmerWithBal(request):
+    print("hey")
     farmers=FarmerProfile.objects.all()
+    print(farmers)
     data=[] 
     for farmer in farmers:
         earned=MilkCollection.objects.filter(farmer=farmer).aggregate(
@@ -214,6 +216,8 @@ def FarmerWithBal(request):
                 "Balance":balance
 
             })  
+
+        print("data",data)
     return Response(data)
 
 

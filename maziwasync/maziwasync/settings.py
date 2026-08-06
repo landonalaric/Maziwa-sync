@@ -92,17 +92,27 @@ WSGI_APPLICATION = 'maziwasync.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'klaus_maziwasyncdb',
+#         'USER': 'klaus',
+#         'PASSWORD': 'Trinity_198507',
+#         'HOST': 'mysql-klaus.alwaysdata.net',
+        
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'klaus_maziwasyncdb',
-        'USER': 'klaus',
-        'PASSWORD': 'Trinity_198507',
-        'HOST': 'mysql-klaus.alwaysdata.net',
+        'NAME': 'maziwasyncdb',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
         
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

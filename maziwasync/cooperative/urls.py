@@ -10,7 +10,7 @@ router.register('notice', views.NoticeViewset, basename='notice')
 urlpatterns = [
 	path('', include(router.urls)),
    path('dashboard/', views.AdminDashboardView.as_view()),
-   path('farmer/balance/', views.FarmerWithBal),
+   path('farmers/balance/', views.FarmerWithBal),
    path('payFarmer/',views.payFarmer),
    path('Callback/',views.MpesaCallback),
    path('admin/profile/', views.AdminProfileView.as_view()),
