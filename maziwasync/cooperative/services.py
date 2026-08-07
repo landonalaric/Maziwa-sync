@@ -27,37 +27,35 @@ class MpesaPayment:
 
         # Return only the token
         return response.json()["access_token"]
+def pay_farmer(self, phone, amount):
+    token = self.get_token()
 
-    def pay_farmer(self, phone, amount):
-        # Get temporary token before making payment request
-        token = self.get_token()
+    payload = {
+        "Initiator": self.initiator,
+        "SecurityCredential": self.security_credential,
+        "CommandID": "BusinessPayToBulk",
+        "Amount": amount,
+        "PartyA": "600977",
+        "PartyB": "600000",
+        "SenderIdentifierType": "4",
+        "RecieverIdentifierType": "4",
+        "AccountReference": "MILK",
+        "Requester": phone,
+        "Remarks": "Milk payment",
+        "QueueTimeOutURL": self.callback_url,
+        "ResultURL": self.callback_url
+    }
 
-        # Data sent to Safaricom
-        payload = {
-
-            "Initiator": self.initiator,
-            "SecurityCredential": self.security_credential,
-            "CommandID": "BusinessPayToBulk",
-            "Amount": amount,
-            "PartyA": "600977",  # Cooperative Shortcode
-            "PartyB": "600000",
-            "SenderIdentifierType": "4",
-            "RecieverIdentifierType": "4",
-            "AccountReference": "MILK",
-            "Requester": phone,     # Farmer phone number
-            "Remarks": "Milk payment",
-            "QueueTimeOutURL": self.callback_url,
-            "ResultURL": self.callback_url
+    response = requests.post(self.payment_url, json=payload,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json"
         }
+    )
 
-        # Send payment request to Daraja
-        response = requests.post(self.payment_url, json=payload,
-            headers={
-                "Authorization": f"Bearer {token}",
-                "Content-Type":"application/json"
-            }
-        )
+    result = response.json()
+    print("=====Safaricom response=====")
+    print("Status:", response.status_code)
+    print("Body:", result)
 
-
-        # Give Django the Safaricom response
-        return response.json()
+    return result

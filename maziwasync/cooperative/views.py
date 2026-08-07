@@ -224,23 +224,31 @@ def FarmerWithBal(request):
 @api_view(["POST"])
 @permission_classes([IsAdminUser])
 def payFarmer(request):
-    farmer_id=request.data.get("farmer_id")
-    amount=request.data.get('amount')
+    farmer_id = request.data.get("farmer_id")
+    amount = request.data.get('amount')
 
-    farmer=FarmerProfile.objects.get(id=farmer_id)
+    farmer = FarmerProfile.objects.get(id=farmer_id)
 
-    earned=MilkCollection.objects.filter(farmer=farmer).aggregate(total=Sum('total_amount'))['total'] or 0
+    earned = MilkCollection.objects.filter(farmer=farmer).aggregate(total=Sum('total_amount'))['total'] or 0
+    paid = Payment.objects.filter(farmer=farmer, status='COMPLETED').aggregate(total=Sum('amount'))['total'] or 0
+    balance = earned - paid
 
-    paid=Payment.objects.filter(farmer=farmer, status='COMPLETED').aggregate(total=Sum('amount'))['total'] or 0
+    if balance <= 0:
+        return Response({"message": "No pending payment"})
 
-    balance=earned-paid
-    if balance<=0:
-        return Response({"message":"No pending payment"})
-    
-    payment=MpesaPayment()
-    result= payment.pay_farmer(farmer.phone_number, amount)
+    mpesa = MpesaPayment()
+    result = mpesa.pay_farmer(farmer.phone_number, amount)
 
-    # create the payment Record
+    if 'OriginatorConversationID' not in result:
+        # Safaricom rejected the request — surface why instead of crashing
+        return Response(
+            {
+                "message": "Payment request failed",
+                "error": result.get("errorMessage") or result.get("fault") or result
+            },
+            status=502
+        )
+
     payment = Payment.objects.create(
         farmer=farmer,
         amount=amount,
@@ -250,9 +258,10 @@ def payFarmer(request):
         transaction_ref=result['ConversationID'],
         payment_date=timezone.now()
     )
+
     return Response({
-        "farmer":f"{farmer.first_name} {farmer.last_name}",
-    
+        "farmer": f"{farmer.first_name} {farmer.last_name}",
+        "message": "Payment request sent"
     })
 
 # ansychoronous callback processing webhook
