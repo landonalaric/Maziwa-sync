@@ -241,15 +241,15 @@ def payFarmer(request):
     result= payment.pay_farmer(farmer.phone_number, amount)
 
     # create the payment Record
-    Payment.objects.create(
+    payment = Payment.objects.create(
         farmer=farmer,
         amount=amount,
         payment_method="MPESA",
+        status="PENDING",
         originator_conversation_id=result['OriginatorConversationID'],
         transaction_ref=result['ConversationID'],
         payment_date=timezone.now()
     )
-
     return Response({
         "farmer":f"{farmer.first_name} {farmer.last_name}",
     
@@ -260,19 +260,23 @@ def payFarmer(request):
 @permission_classes([AllowAny])
 def MpesaCallback(request):
     print("=====Call back Hit=====")
-    data=request.data
-    print("Data",data)
-    result=data["Result"]
+    data = request.data
+    print("Data", data)
+    result = data["Result"]
 
     conversation = result.get("OriginatorConversationID")
 
-    payment = Payment.objects.get(OriginatorConversationID=conversation)
+    try:
+        payment = Payment.objects.get(originator_conversation_id=conversation)
+    except Payment.DoesNotExist:
+        print(f"No matching payment for conversation {conversation}")
+        return Response({"received": True})  # Ack anyway so Safaricom stops retrying
 
-    if result["ResultCode"]==0:
-        payment.status='COMPLETED'
-        payment.transaction_ref=result["TransactionID"]
+    if result["ResultCode"] == 0:
+        payment.status = 'COMPLETED'
+        payment.transaction_ref = result.get("TransactionID", payment.transaction_ref)
     else:
-        payment.status="FAILED"
+        payment.status = "FAILED"
 
     payment.save()
-    return Response({"received":True})        
+    return Response({"received": True})
