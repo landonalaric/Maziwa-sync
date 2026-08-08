@@ -127,11 +127,12 @@ def PredictDisease(request):
     temp = request.data.get("Temperature")
     description = request.data.get("Description")
 
-    ai_service = CattleAIService()
     try:
+        ai_service = CattleAIService()
         result = ai_service.predict(animal_type=animal, age=age, temp=temp, description=description)
         return Response(result)
     except Exception as e:
+        print(f"PredictDisease Error: {e}")
         return Response(
             {"status": "error", "message": "Prediction failed. Please try again."},
             status=500
