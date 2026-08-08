@@ -12,7 +12,7 @@ from datetime import date
 from django.utils import timezone
 from rest_framework.response import Response
 from .services import CattleAIService
-
+import traceback
 
 
 
@@ -134,6 +134,11 @@ def PredictDisease(request):
     except Exception as e:
         print(f"PredictDisease Error: {e}")
         return Response(
-            {"status": "error", "message": "Prediction failed. Please try again."},
+            {
+                "status": "error",
+                "message": "Prediction failed. Please try again.",
+                "debug_error": str(e),
+                "debug_trace": traceback.format_exc()
+            },
             status=500
         )
