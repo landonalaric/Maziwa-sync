@@ -71,40 +71,37 @@ class CattleAIService:
             print(f"Groq treatment Error: {e}")
             return "Treatment temporarily unavailable"
     # PREDICT METHOD
-    def predict(self, animal_type, age, temp, description):
-        # use the LLM extraction utility to filter symptoms out of the incoming text string
+def predict(self, animal_type, age, temp, description):
+    try:
         extracted_symptoms = self.extract_symptoms_with_groq(description)
 
-        # build baseline dictionary mapping all training feature names to zero values
         input_data = {feature: 0 for feature in self.model_features}
-
-        # map raw numeric inputs to their respective matching feature keys
         input_data['Age'] = age
         input_data['Temperature'] = temp
 
-        # convert animal string into one column hey format name string 'Animal_cow
         animal_key = f"Animal_{str(animal_type).strip().lower()}"
         if animal_key in input_data:
-            input_data[animal_key] = 1 
+            input_data[animal_key] = 1
 
         for symptom in extracted_symptoms:
             if symptom in input_data:
                 input_data[symptom] = 1
 
-        # flatten the dict into ordered list matching the exact index setup our model expects
         final_input_vector = [input_data[feature] for feature in self.model_features]
         prediction = self.model.predict([final_input_vector])
-        predicted_disease = prediction[0]
+        predicted_disease = str(prediction[0])   # <-- force native str
 
         treatment_plan = self.get_treament_recommendation(predicted_disease, animal_type)
 
-        # return consolidated final pipeline payload output
         return {
             "status": "success",
             "extracted_symptoms_by_ai": extracted_symptoms,
             "predicted_disease": predicted_disease,
             "treatment_recommendation": treatment_plan
         }
+    except Exception as e:
+        print(f"Predict Error: {e}")
+        raise
 
 
 
