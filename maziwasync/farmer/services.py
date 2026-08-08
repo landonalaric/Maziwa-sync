@@ -71,40 +71,35 @@ class CattleAIService:
             print(f"Groq treatment Error: {e}")
             return "Treatment temporarily unavailable"
     # PREDICT METHOD
-def predict(self, animal_type, age, temp, description):
-    try:
-        extracted_symptoms = self.extract_symptoms_with_groq(description)
+# PREDICT METHOD
+    def predict(self, animal_type, age, temp, description):
+        try:
+            extracted_symptoms = self.extract_symptoms_with_groq(description)
 
-        input_data = {feature: 0 for feature in self.model_features}
-        input_data['Age'] = age
-        input_data['Temperature'] = temp
+            input_data = {feature: 0 for feature in self.model_features}
+            input_data['Age'] = age
+            input_data['Temperature'] = temp
 
-        animal_key = f"Animal_{str(animal_type).strip().lower()}"
-        if animal_key in input_data:
-            input_data[animal_key] = 1
+            animal_key = f"Animal_{str(animal_type).strip().lower()}"
+            if animal_key in input_data:
+                input_data[animal_key] = 1
 
-        for symptom in extracted_symptoms:
-            if symptom in input_data:
-                input_data[symptom] = 1
+            for symptom in extracted_symptoms:
+                if symptom in input_data:
+                    input_data[symptom] = 1
 
-        final_input_vector = [input_data[feature] for feature in self.model_features]
-        prediction = self.model.predict([final_input_vector])
-        predicted_disease = str(prediction[0])   # <-- force native str
+            final_input_vector = [input_data[feature] for feature in self.model_features]
+            prediction = self.model.predict([final_input_vector])
+            predicted_disease = str(prediction[0])
 
-        treatment_plan = self.get_treament_recommendation(predicted_disease, animal_type)
+            treatment_plan = self.get_treament_recommendation(predicted_disease, animal_type)
 
-        return {
-            "status": "success",
-            "extracted_symptoms_by_ai": extracted_symptoms,
-            "predicted_disease": predicted_disease,
-            "treatment_recommendation": treatment_plan
-        }
-    except Exception as e:
-        print(f"Predict Error: {e}")
-        raise
-
-
-
-
- 
-    
+            return {
+                "status": "success",
+                "extracted_symptoms_by_ai": extracted_symptoms,
+                "predicted_disease": predicted_disease,
+                "treatment_recommendation": treatment_plan
+            }
+        except Exception as e:
+            print(f"Predict Error: {e}")
+            raise
