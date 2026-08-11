@@ -11,6 +11,7 @@ from cooperative.serializer import NoticeSerializer
 from datetime import date
 from django.utils import timezone
 from rest_framework.response import Response
+from rest_framework import status
 from .services import CattleAIService
 import traceback
 
@@ -119,15 +120,65 @@ class FarmerNoticeview(generics.ListAPIView):
         return notices   
 
       # AI 
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def PredictDisease(request):
-    animal=request.data.get('Animal')
-    age=request.data.get('Age')
-    temp=request.data.get('Temperature')
-    description=request.data.get('Description')
-    print(request.data)
-    # create our ai object from the cattle ai service 
-    ai_service=CattleAIService()
-    result=ai_service.predict(animal_type=animal,age=age,temp=temp,description=description)
-    return Response(result)
+
+    try:
+        print("REQUEST DATA:", request.data)
+
+        animal = request.data.get("Animal")
+        age = request.data.get("Age")
+        temp = request.data.get("Temperature")
+        description = request.data.get("Description")
+
+        if not animal:
+            return Response(
+                {"error": "Animal is required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if age is None:
+            return Response(
+                {"error": "Age is required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if temp is None:
+            return Response(
+                {"error": "Temperature is required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not description:
+            return Response(
+                {"error": "Description is required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        ai_service = CattleAIService()
+
+        result = ai_service.predict(
+            animal_type=animal,
+            age=float(age),
+            temp=float(temp),
+            description=description
+        )
+
+        return Response(result)
+
+    except Exception as e:
+        print(f"Groq Extraction Error: {e}") 
+        
+        print("========== PREDICTION ERROR ==========")
+        print(str(e))
+        traceback.print_exc()
+        print("======================================")
+
+        return Response(
+            {
+                "status": "error",
+                "message": str(e)
+            },
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
