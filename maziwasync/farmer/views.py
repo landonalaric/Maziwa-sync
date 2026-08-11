@@ -118,27 +118,16 @@ class FarmerNoticeview(generics.ListAPIView):
         )
         return notices   
 
-        # CattleAi function
-@api_view(["POST"])
+      # AI 
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def PredictDisease(request):
-    animal = request.data.get('Animal')
-    age = request.data.get('Age')
-    temp = request.data.get("Temperature")
-    description = request.data.get("Description")
-
-    try:
-        ai_service = CattleAIService()
-        result = ai_service.predict(animal_type=animal, age=age, temp=temp, description=description)
-        return Response(result)
-    except Exception as e:
-        print(f"PredictDisease Error: {e}")
-        return Response(
-            {
-                "status": "error",
-                "message": "Prediction failed. Please try again.",
-                "debug_error": str(e),
-                "debug_trace": traceback.format_exc()
-            },
-            status=500
-        )
+    animal=request.data.get('Animal')
+    age=request.data.get('Age')
+    temp=request.data.get('Temperature')
+    description=request.data.get('Description')
+    print(request.data)
+    # create our ai object from the cattle ai service 
+    ai_service=CattleAIService()
+    result=ai_service.predict(animal_type=animal,age=age,temp=temp,description=description)
+    return Response(result)
