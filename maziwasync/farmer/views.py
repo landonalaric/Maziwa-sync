@@ -125,38 +125,48 @@ class FarmerNoticeview(generics.ListAPIView):
 def PredictDisease(request):
 
     try:
-        print("REQUEST DATA:", request.data)
+        print("========== PREDICTION REQUEST ==========")
+        print(request.data)
 
         animal = request.data.get("Animal")
         age = request.data.get("Age")
         temp = request.data.get("Temperature")
         description = request.data.get("Description")
 
+        print("Animal:", animal)
+        print("Age:", age)
+        print("Temperature:", temp)
+        print("Description:", description)
+
         if not animal:
             return Response(
                 {"error": "Animal is required"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=400
             )
 
         if age is None:
             return Response(
                 {"error": "Age is required"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=400
             )
 
         if temp is None:
             return Response(
                 {"error": "Temperature is required"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=400
             )
 
         if not description:
             return Response(
                 {"error": "Description is required"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=400
             )
 
+        print("Creating CattleAIService...")
+
         ai_service = CattleAIService()
+
+        print("CattleAIService created successfully")
 
         result = ai_service.predict(
             animal_type=animal,
@@ -165,12 +175,16 @@ def PredictDisease(request):
             description=description
         )
 
+        print("Prediction result:", result)
+
         return Response(result)
 
     except Exception as e:
-        print(f"Groq Extraction Error: {e}") 
-        
+
+        import traceback
+
         print("========== PREDICTION ERROR ==========")
+        print(type(e).__name__)
         print(str(e))
         traceback.print_exc()
         print("======================================")
@@ -178,7 +192,8 @@ def PredictDisease(request):
         return Response(
             {
                 "status": "error",
+                "error": type(e).__name__,
                 "message": str(e)
             },
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            status=500
         )
